@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Loan Tracker</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        /* Simple navbar styles */
+        nav {
+            background-color: #007BFF;
+            padding: 10px 20px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+        nav a {
+            color: white;
+            margin-right: 20px;
+            font-weight: bold;
+            text-decoration: none;
+            font-size: 16px;
+        }
+        nav a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav>
+            <a href="index.html">HOME</a>
+            <a href="about.html">ABOUT</a>
+            <a href="{{ url_for('contact') }}">CONTACT</a>
+        </nav>
+
+        <h1>Loan Tracker System</h1>
+        <form id="loan-form">
+            <input type="text" id="borrower" placeholder="Borrower's Name" required />
+            <input type="number" id="amount" placeholder="Loan Amount" required min="0.01" step="0.01" />
+            <input type="date" id="due-date" required />
+            <button type="submit">Add Loan</button>
+        </form>
+
+        <table id="loan-table">
+            <thead>
+                <tr>
+                    <th>Borrower</th>
+                    <th>Amount</th>
+                    <th>Due Date</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Loans will appear here -->
+            </tbody>
+        </table>
+        <div id="summary">
+            <p>Total Loans: <span id="total-count">0</span></p>
+            <p>Total Amount: $<span id="total-amount">0.00</span></p>
+        </div>
+    </div>
+
+    <script>
+        const loanForm = document.getElementById('loan-form');
+        const loanTableBody = document.querySelector('#loan-table tbody');
+        const totalCountElem = document.getElementById('total-count');
+        const totalAmountElem = document.getElementById('total-amount');
+
+        let loans = [];
+
+        function renderLoans() {
+            loanTableBody.innerHTML = '';
+            let totalAmount = 0;
+
+            loans.forEach((loan, index) => {
+                const row = document.createElement('tr');
+
+                row.innerHTML = `
+                    <td>${loan.borrower}</td>
+                    <td>$${loan.amount.toFixed(2)}</td>
+                    <td>${loan.dueDate}</td>
+                    <td>${new Date(loan.dueDate) < new Date() ? '<span class="overdue">Overdue</span>' : 'Pending'}</td>
+                    <td><button onclick="removeLoan(${index})">Delete</button></td>
+                `;
+
+                loanTableBody.appendChild(row);
+                totalAmount += loan.amount;
+            });
+
+            totalCountElem.textContent = loans.length;
+            totalAmountElem.textContent = totalAmount.toFixed(2);
+        }
+
+        function removeLoan(index) {
+            loans.splice(index, 1);
+            renderLoans();
+        }
+
+        loanForm.addEventListener('submit', e => {
+            e.preventDefault();
+
+            const borrower = document.getElementById('borrower').value.trim();
+            const amount = parseFloat(document.getElementById('amount').value);
+            const dueDate = document.getElementById('due-date').value;
+
+            if (borrower && amount > 0 && dueDate) {
+                loans.push({ borrower, amount, dueDate });
+                loanForm.reset();
+                renderLoans();
+            }
+        });
+
+        renderLoans();
+    </script>
+</body>
+</html>
