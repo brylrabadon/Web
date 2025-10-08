@@ -6,7 +6,6 @@
     <title>Loan Tracker</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <style>
-        /* Simple navbar styles */
         nav {
             background-color: #007BFF;
             padding: 10px 20px;
@@ -23,30 +22,74 @@
         nav a:hover {
             text-decoration: underline;
         }
+        .overdue {
+            color: red;
+            font-weight: bold;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        #summary {
+            margin-top: 20px;
+        }
+        input, button {
+            padding: 8px;
+            margin-right: 10px;
+            margin-top: 5px;
+        }
+        #loan-form {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        #loan-form input {
+            flex: 1 1 200px;
+        }
+        #loan-form button {
+            flex: 1 1 100px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        #loan-form button:hover {
+            background-color: #0056b3;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <nav>
-            <a href="index.html">HOME</a>
-            <a href="about.html">ABOUT</a>
+            <a href="{{ url_for('index') }}">HOME</a>
+            <a href="{{ url_for('about') }}">ABOUT</a>
             <a href="{{ url_for('contact') }}">CONTACT</a>
         </nav>
 
         <h1>Loan Tracker System</h1>
         <form id="loan-form">
-            <input type="text" id="borrower" placeholder="Borrower's Name" required />
+            <input type="text" id="full-name" placeholder="Full Name" required />
+            <input type="text" id="address" placeholder="Address" required />
+            <input type="tel" id="contact" placeholder="Contact Number" required pattern="[0-9+\-() ]{7,}" title="Please enter a valid phone number" />
             <input type="number" id="amount" placeholder="Loan Amount" required min="0.01" step="0.01" />
-            <input type="date" id="due-date" required />
+            <input type="date" id="applied-date" required />
             <button type="submit">Add Loan</button>
         </form>
 
         <table id="loan-table">
             <thead>
                 <tr>
-                    <th>Borrower</th>
-                    <th>Amount</th>
-                    <th>Due Date</th>
+                    <th>Full Name</th>
+                    <th>Address</th>
+                    <th>Contact</th>
+                    <th>Loan Amount</th>
+                    <th>Date Applied</th>
                     <th>Status</th>
                     <th>Action</th>
                 </tr>
@@ -55,6 +98,7 @@
                 <!-- Loans will appear here -->
             </tbody>
         </table>
+
         <div id="summary">
             <p>Total Loans: <span id="total-count">0</span></p>
             <p>Total Amount: $<span id="total-amount">0.00</span></p>
@@ -76,11 +120,19 @@
             loans.forEach((loan, index) => {
                 const row = document.createElement('tr');
 
+                // Determine status: If applied date older than 30 days, mark as overdue, else pending
+                const appliedDate = new Date(loan.appliedDate);
+                const now = new Date();
+                const daysSinceApplied = Math.floor((now - appliedDate) / (1000 * 60 * 60 * 24));
+                const status = daysSinceApplied > 30 ? '<span class="overdue">Overdue</span>' : 'Pending';
+
                 row.innerHTML = `
-                    <td>${loan.borrower}</td>
+                    <td>${loan.fullName}</td>
+                    <td>${loan.address}</td>
+                    <td>${loan.contact}</td>
                     <td>$${loan.amount.toFixed(2)}</td>
-                    <td>${loan.dueDate}</td>
-                    <td>${new Date(loan.dueDate) < new Date() ? '<span class="overdue">Overdue</span>' : 'Pending'}</td>
+                    <td>${loan.appliedDate}</td>
+                    <td>${status}</td>
                     <td><button onclick="removeLoan(${index})">Delete</button></td>
                 `;
 
@@ -100,14 +152,18 @@
         loanForm.addEventListener('submit', e => {
             e.preventDefault();
 
-            const borrower = document.getElementById('borrower').value.trim();
+            const fullName = document.getElementById('full-name').value.trim();
+            const address = document.getElementById('address').value.trim();
+            const contact = document.getElementById('contact').value.trim();
             const amount = parseFloat(document.getElementById('amount').value);
-            const dueDate = document.getElementById('due-date').value;
+            const appliedDate = document.getElementById('applied-date').value;
 
-            if (borrower && amount > 0 && dueDate) {
-                loans.push({ borrower, amount, dueDate });
+            if (fullName && address && contact && amount > 0 && appliedDate) {
+                loans.push({ fullName, address, contact, amount, appliedDate });
                 loanForm.reset();
                 renderLoans();
+            } else {
+                alert("Please fill in all fields correctly.");
             }
         });
 

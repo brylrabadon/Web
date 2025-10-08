@@ -1,6 +1,4 @@
-from flask  import Flask, render_template
-from flask_scss import Scss
-from flask_sqlalchemy import SQLAlchemy
+from flask import Flask, render_template
 
 bryl = Flask(__name__)
 
@@ -8,10 +6,13 @@ bryl = Flask(__name__)
 def index():
     return render_template('index.html')
 
-bryl.route("/")
+@bryl.route("/about")
 def about():
     return render_template('about.html')
 
+@bryl.route("/contact")
+def contact():
+    return render_template('contact.html')
 
 if __name__ == '__main__':
     bryl.run(debug=True)
