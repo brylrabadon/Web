@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="container">
+    <h1>Welcome, Admin</h1>
+    <a href="{{ url_for('logout') }}" class="logout">Logout</a>
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <ul class="flash-messages">
+          {% for msg in messages %}
+            <li>{{ msg }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+
+    <h2>Pending Borrowers</h2>
+    {% if pending_borrowers %}
+      <table>
+        <thead>
+          <tr>
+            <th>Username</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+        {% for borrower in pending_borrowers %}
+          <tr>
+            <td>{{ borrower.username }}</td>
+            <td>{{ borrower.status }}</td>
+            <td>
+              <a class="approve" href="{{ url_for('approve_borrower', user_id=borrower.id) }}">Approve</a>
+              <a class="reject" href="{{ url_for('reject_borrower', user_id=borrower.id) }}">Reject</a>
+            </td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <p>No pending borrowers.</p>
+    {% endif %}
+
+    <h2>Loan Applications</h2>
+    {% if loans %}
+      <table>
+        <thead>
+          <tr>
+            <th>User ID</th>
+            <th>Amount</th>
+            <th>Interest Rate</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+        {% for loan in loans %}
+          <tr>
+            <td>{{ loan.user_id }}</td>
+            <td>{{ loan.amount }}</td>
+            <td>{{ loan.interest_rate }}%</td>
+            <td>{{ loan.status }}</td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <p>No loan applications found.</p>
+    {% endif %}
+  </div>
+</body>
+</html>
