@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contact — Loan Tracker</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body>
+  <nav class="navbar">
+    <ul>
+      <li><a href="{{ url_for('homepage') }}">HOME</a></li>
+      <li><a href="{{ url_for('about') }}">ABOUT US</a></li>
+      <li><a href="{{ url_for('contact') }}">CONTACT</a></li>
+      <li><a href="{{ url_for('logout') }}">LOGOUT</a></li>
+    </ul>
+  </nav>
+  <div class="content">
+    <h1>Contact Us</h1>
+    <p>If you have questions or need support, get in touch:</p>
+    <ul>
+      <li>Email: support@loantracker.com</li>
+      <li>Phone: +1 234 567 890</li>
+      <li>Address: 123 Main Street, City, Country</li>
+    </ul>
+  </div>
+</body>
+</html>

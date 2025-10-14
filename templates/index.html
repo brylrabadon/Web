@@ -1,51 +1,55 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Loan Tracker - Login/Register</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <meta charset="UTF-8">
+    <title>LOAN SYSTEM <3</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
-  <div class="container">
-    <h1>Loan Tracker System</h1>
 
-    <!-- Flash Messages -->
-    {% with messages = get_flashed_messages() %}
-      {% if messages %}
-        <ul class="flash-messages">
-          {% for msg in messages %}
-            <li>{{ msg }}</li>
-          {% endfor %}
-        </ul>
-      {% endif %}
-    {% endwith %}
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">LOAN SYSTEM</div>
+            <ul class="nav-links">
+                <li><a href="{{ url_for('home') }}">HOME</a></li>
+                <li><a href="{{ url_for('about') }}">ABOUT US</a></li>
+                <li><a href="{{ url_for('contact') }}">CONTACT</a></li>
+                <li><a href="{{ url_for('logout') }}">LOGOUT</a></li>
+            </ul>
+        </div>
+    </nav>
 
-    <div class="form-box">
-      <h2>Login</h2>
-      <form method="POST" action="{{ url_for('login') }}">
-        <input type="text" name="username" placeholder="Username" required>
-        <input type="password" name="password" placeholder="Password" required>
-        <select name="role" required>
-          <option value="borrower">Borrower</option>
-          <option value="admin">Admin</option>
-        </select>
-        <button type="submit">Login</button>
-      </form>
+    <!-- Login Form -->
+    <div class="login-container">
+        <form class="login-form">
+            <h2>Log In</h2>
+
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required placeholder="Enter your email">
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required placeholder="Enter your password">
+            </div>
+
+            <div class="form-actions">
+                <div>
+                    <input type="checkbox" id="remember" name="remember">
+                    <label for="remember">Remember me</label>
+                </div>
+                <a href="{{ url_for('forgot_password') }}">Forgot password?</a>
+            </div>
+
+            <button type="submit" class="login-button">LOG IN</button>
+
+            <div class="form-links">
+                Don't have an account?
+                <a href="{{ url_for('register') }}">Register</a>
+            </div>
+        </form>
     </div>
-
-    <div class="form-box">
-      <h2>Register</h2>
-      <form method="POST" action="{{ url_for('register') }}">
-        <input type="text" name="username" placeholder="Username" required>
-        <input type="password" name="password" placeholder="Password" required>
-        <select name="role" required>
-          <option value="borrower">Borrower</option>
-          <option value="admin">Admin</option>
-        </select>
-        <button type="submit">Register</button>
-      </form>
-    </div>
-  </div>
 </body>
 </html>

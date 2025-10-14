@@ -1,57 +1,60 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Borrower Dashboard</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Borrower Dashboard — Loan Tracker</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
 </head>
 <body>
-  <div class="container">
-    <h1>Welcome, {{ username }}</h1>
-    <a href="{{ url_for('logout') }}" class="logout">Logout</a>
+  <nav class="navbar">
+    <ul>
+      <li><a href="{{ url_for('homepage') }}">HOME</a></li>
+      <li><a href="{{ url_for('about') }}">ABOUT US</a></li>
+      <li><a href="{{ url_for('contact') }}">CONTACT</a></li>
+      <li><a href="{{ url_for('logout') }}">LOGOUT</a></li>
+    </ul>
+  </nav>
 
-    <!-- Flash Messages -->
-    {% with messages = get_flashed_messages() %}
-      {% if messages %}
-        <ul class="flash-messages">
-          {% for msg in messages %}
-            <li>{{ msg }}</li>
-          {% endfor %}
-        </ul>
+  <div class="content">
+    <h1>Welcome, {{ username }}!</h1>
+
+    <section>
+      <h2>Your Loans</h2>
+      {% if loans %}
+        <table border="1" cellpadding="5">
+          <thead>
+            <tr>
+              <th>Loan ID</th>
+              <th>Amount</th>
+              <th>Interest</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for loan in loans %}
+              <tr>
+                <td>{{ loan.loan_id }}</td>
+                <td>{{ loan.loan_amount }}</td>
+                <td>{{ loan.interest_rate }}%</td>
+                <td>{{ loan.loan_status }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      {% else %}
+        <p>You haven't applied for any loans yet.</p>
       {% endif %}
-    {% endwith %}
+    </section>
 
-    <h2>Apply for a Loan</h2>
-    <form method="POST" action="{{ url_for('apply_loan') }}">
-      <input type="number" name="amount" placeholder="Loan Amount" required min="0">
-      <input type="number" name="interest" placeholder="Interest Rate (%)" required min="0" step="0.1">
-      <button type="submit">Apply</button>
-    </form>
-
-    <h2>Your Loan Applications</h2>
-    {% if loans %}
-      <table>
-        <thead>
-          <tr>
-            <th>Amount</th>
-            <th>Interest</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody>
-        {% for loan in loans %}
-          <tr>
-            <td>{{ loan.amount }}</td>
-            <td>{{ loan.interest_rate }}%</td>
-            <td>{{ loan.status }}</td>
-          </tr>
-        {% endfor %}
-        </tbody>
-      </table>
-    {% else %}
-      <p>No loan applications yet.</p>
-    {% endif %}
+    <section>
+      <h2>Apply for a New Loan</h2>
+      <form method="POST" action="{{ url_for('apply_loan') }}">
+        <input type="number" name="amount" placeholder="Loan Amount" step="0.01" required />
+        <input type="number" name="interest" placeholder="Interest Rate (%)" step="0.01" required />
+        <button type="submit">Submit Application</button>
+      </form>
+    </section>
   </div>
 </body>
 </html>
